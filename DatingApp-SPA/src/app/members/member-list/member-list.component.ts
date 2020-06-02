@@ -4,6 +4,7 @@ import { UserService } from '../../_services/user.service';
 import { AlertifyService } from '../../_services/alertify.service';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
+import { FileUploadModule } from 'ng2-file-upload';
 
 @Component({
   selector: 'app-member-list',
@@ -12,6 +13,9 @@ import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
 })
 export class MemberListComponent implements OnInit {
   users: User[];
+  user: User = JSON.parse(localStorage.getItem('user'));
+  genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Females'}];
+  userParams: any = {};
   pagination: Pagination;
 
   constructor(private userService: UserService,
@@ -25,7 +29,11 @@ export class MemberListComponent implements OnInit {
       this.users = data[key].result;
       this.pagination = data[key].pagination;
     });
+
+    this.initFilters();
+    this.initSorting();
   }
+
 
   pageChanged(event: any): void {
     this.pagination.currentPage = event.page;
@@ -34,8 +42,23 @@ export class MemberListComponent implements OnInit {
 
   }
 
+  initSorting() {
+    this.userParams.orderBy = 'lastActive';
+  }
+
+  initFilters() {
+    this.userParams.gender = this.user.gender === 'female' ? 'male' : 'female';
+    this.userParams.minAge = 18;
+    this.userParams.maxAge = 129;
+  }
+
+  resetFilters() {
+    this.initFilters();
+    this.loadUsers();
+  }
+
   loadUsers() {
-    this.userService.getUsers(this.pagination.currentPage, this.pagination.itemsPerPage)
+    this.userService.getUsers(this.pagination.currentPage, this.pagination.itemsPerPage, this.userParams)
       .subscribe((res: PaginatedResult<User[]>) => {
       this.users = res.result;
       this.pagination = res.pagination;

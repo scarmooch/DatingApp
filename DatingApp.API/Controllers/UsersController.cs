@@ -32,6 +32,17 @@ namespace DatingApp.API.Controllers
         // w/ [FromQuery], default values are used if empty
         public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams)
         {
+            // filter away the current user
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var userFromRepo = await _repo.GetUser(currentUserId);
+            userParams.UserId = currentUserId;
+            // filter away whatever user is not looking for (if nothing sepcified opposite sex)
+            if(string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
+            }
+
+            // get list of users
             var users = await _repo.GetUsers(userParams);
 
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);

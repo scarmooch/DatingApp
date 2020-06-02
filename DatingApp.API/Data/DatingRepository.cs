@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,7 +49,32 @@ namespace DatingApp.API.Data
             // changed S14.142 introducing paging   
             // var users = await _context.Users.Include(p => p.Photos).ToListAsync();
             // return users;
-            var users = _context.Users.Include(p => p.Photos);
+            var users = _context.Users.Include(p => p.Photos).OrderByDescending(u => u.LastActive).AsQueryable();
+
+            users = users.Where(u => u.Id != userParams.UserId);
+            users = users.Where(u => u.Gender == userParams.Gender);
+
+            if(userParams.MinAge !=0 || userParams.MaxAge != 129)
+            {
+                // calc date of birth range
+                var minDoB = DateTime.Today.AddYears(-userParams.MaxAge -1);
+                var maxDoB = DateTime.Today.AddYears(-userParams.MinAge);
+                users = users.Where(u => u.DateOfBirth >= minDoB && u.DateOfBirth <= maxDoB);
+            }
+
+            if(!string.IsNullOrEmpty(userParams.OrderBy))
+            {
+                switch(userParams.OrderBy)
+                {
+                    case "created":
+                        users = users.OrderByDescending(u => u.Created);
+                        break;
+                    default:
+                        users = users.OrderByDescending(u => u.LastActive);
+                        break;
+                }
+            }
+
             // note users is IQueryable
             return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);        
         }
