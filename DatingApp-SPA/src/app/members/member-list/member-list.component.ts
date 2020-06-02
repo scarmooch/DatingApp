@@ -39,7 +39,6 @@ export class MemberListComponent implements OnInit {
     this.pagination.currentPage = event.page;
     // this.alertify.message('current page: ' + this.pagination.currentPage);
     this.loadUsers();
-
   }
 
   initSorting() {
