@@ -28,6 +28,7 @@ import { appRoutes } from './routes';
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { AlertifyService } from './_services/alertify.service';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
@@ -37,6 +38,7 @@ import { AuthGuard } from './_guards/auth.guard';
 import { UserService } from './_services/user.service';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { MessagesResolver } from './_resolvers/messages.resolver';
 
 
 
@@ -56,7 +58,8 @@ export function myTokenGetter() {
       MemberEditComponent,
       PhotoEditorComponent,
       ListsComponent,
-      MessagesComponent
+      MessagesComponent,
+      MemberMessagesComponent
    ],
    imports: [
       BrowserModule,
@@ -92,6 +95,7 @@ export function myTokenGetter() {
       MemberDetailResolver,
       MemberListResolver,
       MemberEditResolver,
+      MessagesResolver,
       ListsResolver
    ],
    bootstrap: [
