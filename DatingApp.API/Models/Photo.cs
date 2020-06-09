@@ -10,7 +10,7 @@ namespace DatingApp.API.Models
         public DateTime DateAdded { get; set; }
         public bool IsMain { get; set; }
         public string PublicId { get; set; } //cloudinary id
-        public string User { get; set; }
+        public virtual string User { get; set; }
         public int UserId { get; set; }
     }
 }
