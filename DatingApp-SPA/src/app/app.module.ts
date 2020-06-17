@@ -13,6 +13,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { TimeagoModule } from 'ngx-timeago';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { from } from 'rxjs';
 
 import { AppComponent } from './app.component';
@@ -39,6 +40,12 @@ import { UserService } from './_services/user.service';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { MessagesResolver } from './_resolvers/messages.resolver';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { HasRoleDirective } from './_directives/hasRole.directive';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
+import { AdminService } from './_services/admin.service';
+import { RolesModalComponent } from './admin/roles-modal/roles-modal.component';
 
 
 
@@ -59,7 +66,12 @@ export function myTokenGetter() {
       PhotoEditorComponent,
       ListsComponent,
       MessagesComponent,
-      MemberMessagesComponent
+      MemberMessagesComponent,
+      AdminPanelComponent,
+      HasRoleDirective,
+      UserManagementComponent,
+      PhotoManagementComponent,
+      RolesModalComponent
    ],
    imports: [
       BrowserModule,
@@ -76,14 +88,16 @@ export function myTokenGetter() {
          config: {
             tokenGetter: myTokenGetter,
             whitelistedDomains: ['localhost:5000'],
-            blacklistedRoutes: ['localhost:5000/api/auth']
+            blacklistedRoutes: ['http://localhost:5000/api/auth',
+                                 'http://localhost:5000/api/auth/register']
          }
       }),
       NgxGalleryModule,
       FileUploadModule,
       TimeagoModule.forRoot(),
       PaginationModule.forRoot(),
-      ButtonsModule.forRoot()
+      ButtonsModule.forRoot(),
+      ModalModule.forRoot()
    ],
    providers: [
       ErrorInterceptorProvider,
@@ -92,11 +106,15 @@ export function myTokenGetter() {
       AuthGuard,
       PreventUnsavedChanges,
       UserService,
+      AdminService,
       MemberDetailResolver,
       MemberListResolver,
       MemberEditResolver,
       MessagesResolver,
       ListsResolver
+   ],
+   entryComponents: [
+      RolesModalComponent
    ],
    bootstrap: [
       AppComponent

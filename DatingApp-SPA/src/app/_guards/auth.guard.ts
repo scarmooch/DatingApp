@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 // import { Observable } from 'rxjs';
 
 import { AuthService } from '../_services/auth.service';
@@ -20,7 +20,18 @@ export class AuthGuard implements CanActivate {
     // state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     // return true;
   // }
-  canActivate(): boolean {
+  canActivate(next: ActivatedRouteSnapshot): boolean {
+    const roles = next.firstChild.data['roles'] as Array<string>;
+    if (roles) {
+      const match = this.authService.roleMatch(roles);
+      if (match) {
+        return true;
+      } else {
+        this.router.navigate(['members']);
+        this.alertify.error('You are not authorised to access this area');
+      }
+    }
+
     // if we are logged in
     if (this.authService.loggedIn())
     {
